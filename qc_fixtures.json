@@ -1,0 +1,22 @@
+{
+  "source_command": "RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN:-stable} cargo run --quiet --example qc_probe --",
+  "migrated_command": "npm run build >/dev/null 2>&1 && node qc_probe.mjs",
+  "cases": [
+    { "name": "from-iter", "args": ["from-iter"] },
+    { "name": "missing-value", "args": ["missing-value"] },
+    { "name": "invalid-type", "args": ["invalid-type"] },
+    { "name": "unknown-var-ignored", "args": ["unknown-var-ignored"] },
+    { "name": "prefixed", "args": ["prefixed"] },
+    { "name": "prefixed-missing", "args": ["prefixed-missing"] },
+    { "name": "keep-names", "args": ["keep-names"] },
+    { "name": "vec-trim-bom", "args": ["vec-trim-bom"] },
+    { "name": "vec-trim-nel", "args": ["vec-trim-nel"] },
+    { "name": "vec-empty", "args": ["vec-empty"] },
+    { "name": "option-absent", "args": ["option-absent"] },
+    { "name": "option-empty", "args": ["option-empty"] },
+    { "name": "enum-unknown", "args": ["enum-unknown"] },
+    { "name": "duplicate-field", "args": ["duplicate-field"] },
+    { "name": "float-overflow", "args": ["float-overflow"] },
+    { "name": "unknown-probe", "args": ["bogus-probe"] }
+  ]
+}

@@ -1,0 +1,5901 @@
+[
+  {
+    "id": "deserialize_from_iter",
+    "input": [
+      [
+        "BAR",
+        "test"
+      ],
+      [
+        "BAZ",
+        "true"
+      ],
+      [
+        "DOOM",
+        "1, 2, 3 "
+      ],
+      [
+        "BOOM",
+        ""
+      ],
+      [
+        "SIZE",
+        "small"
+      ],
+      [
+        "PROVIDED",
+        "test"
+      ],
+      [
+        "NEWTYPE",
+        "42"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "bar": "test",
+        "baz": true,
+        "boom": [],
+        "debug_mode": false,
+        "doom": [
+          "1",
+          "2",
+          "3"
+        ],
+        "kaboom": 8080,
+        "newtype": 42,
+        "provided": "test",
+        "size": "small",
+        "zoom": null
+      }
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "fails_with_missing_value",
+    "input": [
+      [
+        "BAR",
+        "test"
+      ],
+      [
+        "BAZ",
+        "true"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "MissingValue",
+        "message": "missing value for DOOM",
+        "payload": "DOOM"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "prefixed_fails_with_missing_value",
+    "input": [
+      [
+        "PREFIX_BAR",
+        "test"
+      ],
+      [
+        "PREFIX_BAZ",
+        "true"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "PREFIX_"
+    },
+    "outcome": {
+      "error": {
+        "kind": "MissingValue",
+        "message": "missing value for PREFIX_DOOM",
+        "payload": "PREFIX_DOOM"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "fails_with_invalid_type",
+    "input": [
+      [
+        "BAR",
+        "test"
+      ],
+      [
+        "BAZ",
+        "notabool"
+      ],
+      [
+        "DOOM",
+        "1,2,3"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value 'notabool' provided by BAZ",
+        "payload": "provided string was not `true` or `false` while parsing value 'notabool' provided by BAZ"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "deserializes_from_prefixed_fieldnames",
+    "input": [
+      [
+        "APP_BAR",
+        "test"
+      ],
+      [
+        "APP_BAZ",
+        "true"
+      ],
+      [
+        "APP_DOOM",
+        ""
+      ],
+      [
+        "APP_BOOM",
+        "4,5"
+      ],
+      [
+        "APP_SIZE",
+        "small"
+      ],
+      [
+        "APP_PROVIDED",
+        "test"
+      ],
+      [
+        "APP_NEWTYPE",
+        "42"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "APP_"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "bar": "test",
+        "baz": true,
+        "boom": [
+          "4",
+          "5"
+        ],
+        "debug_mode": false,
+        "doom": [],
+        "kaboom": 8080,
+        "newtype": 42,
+        "provided": "test",
+        "size": "small",
+        "zoom": null
+      }
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "prefixed_strips_prefixes",
+    "input": [
+      [
+        "PRE_FOO",
+        "bar"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "PRE_"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "foo": "bar"
+      }
+    },
+    "target": "MapString"
+  },
+  {
+    "id": "prefixed_doesnt_parse_non_prefixed",
+    "input": [
+      [
+        "FOO",
+        "asd"
+      ],
+      [
+        "PRE_FOO",
+        "12"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "PRE_"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "foo": 12
+      }
+    },
+    "target": "MapU32"
+  },
+  {
+    "id": "keep_names_from_iter",
+    "input": [
+      [
+        "BaR",
+        "test"
+      ],
+      [
+        "SCREAMING_BAZ",
+        "true"
+      ],
+      [
+        "zoom",
+        "8080"
+      ]
+    ],
+    "mode": {
+      "kind": "keepNames"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "BaR": "test",
+        "SCREAMING_BAZ": true,
+        "zoom": 8080
+      }
+    },
+    "target": "CrazyFoo"
+  },
+  {
+    "id": "plain_lowercases_keys",
+    "input": [
+      [
+        "FOO",
+        "1"
+      ],
+      [
+        "MiXeD",
+        "2"
+      ],
+      [
+        "already_low",
+        "3"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "already_low": "3",
+        "foo": "1",
+        "mixed": "2"
+      }
+    },
+    "target": "MapString"
+  },
+  {
+    "id": "prefix_stripped_repeatedly",
+    "input": [
+      [
+        "PRE_PRE_FOO",
+        "bar"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "PRE_"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "foo": "bar"
+      }
+    },
+    "target": "MapString"
+  },
+  {
+    "id": "prefix_exact_match_only",
+    "input": [
+      [
+        "XPRE_FOO",
+        "a"
+      ],
+      [
+        "PRE_",
+        "b"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "PRE_"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "": "b"
+      }
+    },
+    "target": "MapString"
+  },
+  {
+    "id": "unknown_vars_ignored",
+    "input": [
+      [
+        "PROVIDED",
+        "x"
+      ],
+      [
+        "TOTALLY_UNRELATED",
+        "y"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "provided": "x"
+      }
+    },
+    "target": "OptStr"
+  },
+  {
+    "id": "duplicate_field",
+    "input": [
+      [
+        "FOO",
+        "a"
+      ],
+      [
+        "foo",
+        "b"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "duplicate field `foo`",
+        "payload": "duplicate field `foo`"
+      },
+      "ok": false
+    },
+    "target": "Dup"
+  },
+  {
+    "id": "keep_names_missing_not_uppercased",
+    "input": [
+      [
+        "SCREAMING_BAZ",
+        "true"
+      ]
+    ],
+    "mode": {
+      "kind": "keepNames"
+    },
+    "outcome": {
+      "error": {
+        "kind": "MissingValue",
+        "message": "missing value for BaR",
+        "payload": "BaR"
+      },
+      "ok": false
+    },
+    "target": "CrazyFoo"
+  },
+  {
+    "id": "prefixed_lowercase_prefix_missing_uppercased",
+    "input": [
+      [
+        "pre_bar",
+        "test"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "pre_"
+    },
+    "outcome": {
+      "error": {
+        "kind": "MissingValue",
+        "message": "missing value for PRE_BAZ",
+        "payload": "PRE_BAZ"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "prefixed_parse_error_names_stripped_key",
+    "input": [
+      [
+        "APP_BAR",
+        "x"
+      ],
+      [
+        "APP_BAZ",
+        "notabool"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": "APP_"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value 'notabool' provided by BAZ",
+        "payload": "provided string was not `true` or `false` while parsing value 'notabool' provided by BAZ"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "empty_input",
+    "input": [],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "MissingValue",
+        "message": "missing value for BAR",
+        "payload": "BAR"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "option_absent",
+    "input": [],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "provided": null
+      }
+    },
+    "target": "OptStr"
+  },
+  {
+    "id": "option_present_empty",
+    "input": [
+      [
+        "PROVIDED",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "provided": ""
+      }
+    },
+    "target": "OptStr"
+  },
+  {
+    "id": "option_present_invalid",
+    "input": [
+      [
+        "V",
+        "abc"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value 'abc' provided by V",
+        "payload": "invalid digit found in string while parsing value 'abc' provided by V"
+      },
+      "ok": false
+    },
+    "target": "OptU16S"
+  },
+  {
+    "id": "option_present_valid",
+    "input": [
+      [
+        "V",
+        "7"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 7
+      }
+    },
+    "target": "OptU16S"
+  },
+  {
+    "id": "vec_empty_string",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": []
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vec_single",
+    "input": [
+      [
+        "V",
+        "7"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          7
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vec_spaces",
+    "input": [
+      [
+        "V",
+        " 1 , 2 ,3 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vec_trailing_comma",
+    "input": [
+      [
+        "V",
+        "1,2,"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "cannot parse integer from empty string while parsing value '' provided by V",
+        "payload": "cannot parse integer from empty string while parsing value '' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vec_leading_comma",
+    "input": [
+      [
+        "V",
+        ",1,2"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "cannot parse integer from empty string while parsing value '' provided by V",
+        "payload": "cannot parse integer from empty string while parsing value '' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vec_only_comma",
+    "input": [
+      [
+        "V",
+        ","
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "cannot parse integer from empty string while parsing value '' provided by V",
+        "payload": "cannot parse integer from empty string while parsing value '' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vec_invalid_elem",
+    "input": [
+      [
+        "V",
+        "1,x,3"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value 'x' provided by V",
+        "payload": "invalid digit found in string while parsing value 'x' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "vecstr_empty_string",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": []
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "vecstr_embedded_empty",
+    "input": [
+      [
+        "V",
+        "a,,b"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "a",
+          "",
+          "b"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "vecstr_trims",
+    "input": [
+      [
+        "V",
+        " a , b "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "vecstr_only_spaces",
+    "input": [
+      [
+        "V",
+        "   "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "bool_true",
+    "input": [
+      [
+        "V",
+        "true"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": true
+      }
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "bool_false",
+    "input": [
+      [
+        "V",
+        "false"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": false
+      }
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "bool_True",
+    "input": [
+      [
+        "V",
+        "True"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value 'True' provided by V",
+        "payload": "provided string was not `true` or `false` while parsing value 'True' provided by V"
+      },
+      "ok": false
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "bool_TRUE",
+    "input": [
+      [
+        "V",
+        "TRUE"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value 'TRUE' provided by V",
+        "payload": "provided string was not `true` or `false` while parsing value 'TRUE' provided by V"
+      },
+      "ok": false
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "bool_one",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value '1' provided by V",
+        "payload": "provided string was not `true` or `false` while parsing value '1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "bool_empty",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value '' provided by V",
+        "payload": "provided string was not `true` or `false` while parsing value '' provided by V"
+      },
+      "ok": false
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "bool_padded",
+    "input": [
+      [
+        "V",
+        " true"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "provided string was not `true` or `false` while parsing value ' true' provided by V",
+        "payload": "provided string was not `true` or `false` while parsing value ' true' provided by V"
+      },
+      "ok": false
+    },
+    "target": "BoolS"
+  },
+  {
+    "id": "u8_min",
+    "input": [
+      [
+        "V",
+        "0"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 0
+      }
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_max",
+    "input": [
+      [
+        "V",
+        "255"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 255
+      }
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_overflow",
+    "input": [
+      [
+        "V",
+        "256"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too large to fit in target type while parsing value '256' provided by V",
+        "payload": "number too large to fit in target type while parsing value '256' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_negative",
+    "input": [
+      [
+        "V",
+        "-1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '-1' provided by V",
+        "payload": "invalid digit found in string while parsing value '-1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_plus",
+    "input": [
+      [
+        "V",
+        "+42"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 42
+      }
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_empty",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "cannot parse integer from empty string while parsing value '' provided by V",
+        "payload": "cannot parse integer from empty string while parsing value '' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_lone_plus",
+    "input": [
+      [
+        "V",
+        "+"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '+' provided by V",
+        "payload": "invalid digit found in string while parsing value '+' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_lone_minus",
+    "input": [
+      [
+        "V",
+        "-"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '-' provided by V",
+        "payload": "invalid digit found in string while parsing value '-' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_space_lead",
+    "input": [
+      [
+        "V",
+        " 42"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value ' 42' provided by V",
+        "payload": "invalid digit found in string while parsing value ' 42' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_space_trail",
+    "input": [
+      [
+        "V",
+        "42 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '42 ' provided by V",
+        "payload": "invalid digit found in string while parsing value '42 ' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_underscore",
+    "input": [
+      [
+        "V",
+        "4_2"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '4_2' provided by V",
+        "payload": "invalid digit found in string while parsing value '4_2' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_hex",
+    "input": [
+      [
+        "V",
+        "0x10"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '0x10' provided by V",
+        "payload": "invalid digit found in string while parsing value '0x10' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_decimal",
+    "input": [
+      [
+        "V",
+        "4.2"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '4.2' provided by V",
+        "payload": "invalid digit found in string while parsing value '4.2' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_leading_zeros",
+    "input": [
+      [
+        "V",
+        "0042"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 42
+      }
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "u8_huge",
+    "input": [
+      [
+        "V",
+        "99999999999999999999999"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too large to fit in target type while parsing value '99999999999999999999999' provided by V",
+        "payload": "number too large to fit in target type while parsing value '99999999999999999999999' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "i8_min",
+    "input": [
+      [
+        "V",
+        "-128"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": -128
+      }
+    },
+    "target": "I8S"
+  },
+  {
+    "id": "i8_underflow",
+    "input": [
+      [
+        "V",
+        "-129"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too small to fit in target type while parsing value '-129' provided by V",
+        "payload": "number too small to fit in target type while parsing value '-129' provided by V"
+      },
+      "ok": false
+    },
+    "target": "I8S"
+  },
+  {
+    "id": "i8_max",
+    "input": [
+      [
+        "V",
+        "127"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 127
+      }
+    },
+    "target": "I8S"
+  },
+  {
+    "id": "i8_overflow",
+    "input": [
+      [
+        "V",
+        "128"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too large to fit in target type while parsing value '128' provided by V",
+        "payload": "number too large to fit in target type while parsing value '128' provided by V"
+      },
+      "ok": false
+    },
+    "target": "I8S"
+  },
+  {
+    "id": "i8_neg_zero",
+    "input": [
+      [
+        "V",
+        "-0"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 0
+      }
+    },
+    "target": "I8S"
+  },
+  {
+    "id": "u16_max",
+    "input": [
+      [
+        "V",
+        "65535"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 65535
+      }
+    },
+    "target": "U16S"
+  },
+  {
+    "id": "u16_overflow",
+    "input": [
+      [
+        "V",
+        "65536"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too large to fit in target type while parsing value '65536' provided by V",
+        "payload": "number too large to fit in target type while parsing value '65536' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U16S"
+  },
+  {
+    "id": "i32_min",
+    "input": [
+      [
+        "V",
+        "-2147483648"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": -2147483648
+      }
+    },
+    "target": "I32S"
+  },
+  {
+    "id": "i32_max",
+    "input": [
+      [
+        "V",
+        "2147483647"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 2147483647
+      }
+    },
+    "target": "I32S"
+  },
+  {
+    "id": "i32_overflow",
+    "input": [
+      [
+        "V",
+        "2147483648"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too large to fit in target type while parsing value '2147483648' provided by V",
+        "payload": "number too large to fit in target type while parsing value '2147483648' provided by V"
+      },
+      "ok": false
+    },
+    "target": "I32S"
+  },
+  {
+    "id": "u64_max",
+    "input": [
+      [
+        "V",
+        "18446744073709551615"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18446744073709551615"
+      }
+    },
+    "target": "U64S"
+  },
+  {
+    "id": "u64_overflow",
+    "input": [
+      [
+        "V",
+        "18446744073709551616"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too large to fit in target type while parsing value '18446744073709551616' provided by V",
+        "payload": "number too large to fit in target type while parsing value '18446744073709551616' provided by V"
+      },
+      "ok": false
+    },
+    "target": "U64S"
+  },
+  {
+    "id": "u64_beyond_2_53",
+    "input": [
+      [
+        "V",
+        "9007199254740993"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9007199254740993"
+      }
+    },
+    "target": "U64S"
+  },
+  {
+    "id": "i64_min",
+    "input": [
+      [
+        "V",
+        "-9223372036854775808"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "-9223372036854775808"
+      }
+    },
+    "target": "I64S"
+  },
+  {
+    "id": "i64_underflow",
+    "input": [
+      [
+        "V",
+        "-9223372036854775809"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "number too small to fit in target type while parsing value '-9223372036854775809' provided by V",
+        "payload": "number too small to fit in target type while parsing value '-9223372036854775809' provided by V"
+      },
+      "ok": false
+    },
+    "target": "I64S"
+  },
+  {
+    "id": "i64_max",
+    "input": [
+      [
+        "V",
+        "9223372036854775807"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9223372036854775807"
+      }
+    },
+    "target": "I64S"
+  },
+  {
+    "id": "f64_simple",
+    "input": [
+      [
+        "V",
+        "1.5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4609434218613702656"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_negative",
+    "input": [
+      [
+        "V",
+        "-2.25"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "13835621005235585024"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_int",
+    "input": [
+      [
+        "V",
+        "100"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4636737291354636288"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_exp",
+    "input": [
+      [
+        "V",
+        "1e5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4681608360884174848"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_exp_plus",
+    "input": [
+      [
+        "V",
+        "1E+5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4681608360884174848"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_leading_dot",
+    "input": [
+      [
+        "V",
+        ".5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4602678819172646912"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_trailing_dot",
+    "input": [
+      [
+        "V",
+        "5."
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4617315517961601024"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_inf",
+    "input": [
+      [
+        "V",
+        "inf"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_infinity",
+    "input": [
+      [
+        "V",
+        "infinity"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_inf_upper",
+    "input": [
+      [
+        "V",
+        "INF"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_neg_inf",
+    "input": [
+      [
+        "V",
+        "-inf"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18442240474082181120"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_nan",
+    "input": [
+      [
+        "V",
+        "NaN"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_nan_lower",
+    "input": [
+      [
+        "V",
+        "nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_neg_zero",
+    "input": [
+      [
+        "V",
+        "-0"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9223372036854775808"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_empty",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "cannot parse float from empty string while parsing value '' provided by V",
+        "payload": "cannot parse float from empty string while parsing value '' provided by V"
+      },
+      "ok": false
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_garbage",
+    "input": [
+      [
+        "V",
+        "abc"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid float literal while parsing value 'abc' provided by V",
+        "payload": "invalid float literal while parsing value 'abc' provided by V"
+      },
+      "ok": false
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_hex",
+    "input": [
+      [
+        "V",
+        "0x1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid float literal while parsing value '0x1' provided by V",
+        "payload": "invalid float literal while parsing value '0x1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_padded",
+    "input": [
+      [
+        "V",
+        " 1.5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid float literal while parsing value ' 1.5' provided by V",
+        "payload": "invalid float literal while parsing value ' 1.5' provided by V"
+      },
+      "ok": false
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_plus",
+    "input": [
+      [
+        "V",
+        "+1.5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4609434218613702656"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f64_overflow",
+    "input": [
+      [
+        "V",
+        "1e400"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "f32_tenth",
+    "input": [
+      [
+        "V",
+        "0.1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4591870180174331904"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "f32_max",
+    "input": [
+      [
+        "V",
+        "3.4028235e38"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "5183643170566569984"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "f32_overflow",
+    "input": [
+      [
+        "V",
+        "1e39"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "f32_simple",
+    "input": [
+      [
+        "V",
+        "1.5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "4609434218613702656"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "char_ascii",
+    "input": [
+      [
+        "V",
+        "a"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "a"
+      }
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "char_two",
+    "input": [
+      [
+        "V",
+        "ab"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"ab\", expected a character",
+        "payload": "invalid value: string \"ab\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "char_empty",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"\", expected a character",
+        "payload": "invalid value: string \"\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "char_accent",
+    "input": [
+      [
+        "V",
+        "é"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "é"
+      }
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "char_emoji",
+    "input": [
+      [
+        "V",
+        "🎉"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "🎉"
+      }
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "char_space",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": " "
+      }
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "string_padded",
+    "input": [
+      [
+        "V",
+        "  spaced  "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "  spaced  "
+      }
+    },
+    "target": "StrS"
+  },
+  {
+    "id": "string_empty",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": ""
+      }
+    },
+    "target": "StrS"
+  },
+  {
+    "id": "string_comma",
+    "input": [
+      [
+        "V",
+        "a,b"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "a,b"
+      }
+    },
+    "target": "StrS"
+  },
+  {
+    "id": "enum_lower_ok",
+    "input": [
+      [
+        "SIZE",
+        "small"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "size": "small"
+      }
+    },
+    "target": "SizeS"
+  },
+  {
+    "id": "enum_wrong_case",
+    "input": [
+      [
+        "SIZE",
+        "Small"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "unknown variant `Small`, expected one of `small`, `medium`, `large`",
+        "payload": "unknown variant `Small`, expected one of `small`, `medium`, `large`"
+      },
+      "ok": false
+    },
+    "target": "SizeS"
+  },
+  {
+    "id": "enum_unknown",
+    "input": [
+      [
+        "SIZE",
+        "huge"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "unknown variant `huge`, expected one of `small`, `medium`, `large`",
+        "payload": "unknown variant `huge`, expected one of `small`, `medium`, `large`"
+      },
+      "ok": false
+    },
+    "target": "SizeS"
+  },
+  {
+    "id": "enum_empty",
+    "input": [
+      [
+        "SIZE",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "unknown variant ``, expected one of `small`, `medium`, `large`",
+        "payload": "unknown variant ``, expected one of `small`, `medium`, `large`"
+      },
+      "ok": false
+    },
+    "target": "SizeS"
+  },
+  {
+    "id": "enum_screaming_snake",
+    "input": [
+      [
+        "V",
+        "ONE_TWO"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "ONE_TWO"
+      }
+    },
+    "target": "LoudS"
+  },
+  {
+    "id": "enum_kebab",
+    "input": [
+      [
+        "V",
+        "three-four"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "three-four"
+      }
+    },
+    "target": "KebabS"
+  },
+  {
+    "id": "enum_no_rename",
+    "input": [
+      [
+        "V",
+        "OneTwo"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "OneTwo"
+      }
+    },
+    "target": "PlainS"
+  },
+  {
+    "id": "newtype_ok",
+    "input": [
+      [
+        "V",
+        "42"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": 42
+      }
+    },
+    "target": "NewtypeS"
+  },
+  {
+    "id": "newtype_invalid",
+    "input": [
+      [
+        "V",
+        "nope"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value 'nope' provided by V",
+        "payload": "invalid digit found in string while parsing value 'nope' provided by V"
+      },
+      "ok": false
+    },
+    "target": "NewtypeS"
+  },
+  {
+    "id": "defaults_all_absent",
+    "input": [],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "b": false,
+        "n": 0,
+        "o": null,
+        "s": "",
+        "size": "medium",
+        "v": []
+      }
+    },
+    "target": "DefaultsS"
+  },
+  {
+    "id": "defaults_partially_present",
+    "input": [
+      [
+        "B",
+        "true"
+      ],
+      [
+        "SIZE",
+        "large"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "b": true,
+        "n": 0,
+        "o": null,
+        "s": "",
+        "size": "large",
+        "v": []
+      }
+    },
+    "target": "DefaultsS"
+  },
+  {
+    "id": "default_not_applied_when_present_invalid",
+    "input": [
+      [
+        "BAR",
+        "x"
+      ],
+      [
+        "BAZ",
+        "true"
+      ],
+      [
+        "DOOM",
+        ""
+      ],
+      [
+        "BOOM",
+        ""
+      ],
+      [
+        "KABOOM",
+        "notanumber"
+      ],
+      [
+        "NEWTYPE",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value 'notanumber' provided by KABOOM",
+        "payload": "invalid digit found in string while parsing value 'notanumber' provided by KABOOM"
+      },
+      "ok": false
+    },
+    "target": "Foo"
+  },
+  {
+    "id": "vec_of_enums",
+    "input": [
+      [
+        "V",
+        "small,large"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "small",
+          "large"
+        ]
+      }
+    },
+    "target": "VecSizeS"
+  },
+  {
+    "id": "option_vec_present",
+    "input": [
+      [
+        "V",
+        "1,2"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1,
+          2
+        ]
+      }
+    },
+    "target": "OptVecS"
+  },
+  {
+    "id": "option_vec_absent",
+    "input": [],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": null
+      }
+    },
+    "target": "OptVecS"
+  },
+  {
+    "id": "nested_struct_unsupported",
+    "input": [
+      [
+        "INNER",
+        "whatever"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: string \"whatever\", expected struct Inner",
+        "payload": "invalid type: string \"whatever\", expected struct Inner"
+      },
+      "ok": false
+    },
+    "target": "NestedS"
+  },
+  {
+    "id": "map_of_vecs",
+    "input": [
+      [
+        "A",
+        "1,2"
+      ],
+      [
+        "B",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "a": [
+          1,
+          2
+        ],
+        "b": []
+      }
+    },
+    "target": "MapVecU32"
+  },
+  {
+    "id": "empty_prefix",
+    "input": [
+      [
+        "FOO",
+        "bar"
+      ]
+    ],
+    "mode": {
+      "kind": "prefixed",
+      "prefix": ""
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "foo": "bar"
+      }
+    },
+    "target": "MapString"
+  },
+  {
+    "id": "keep_names_vec",
+    "input": [
+      [
+        "v",
+        "1,2"
+      ]
+    ],
+    "mode": {
+      "kind": "keepNames"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1,
+          2
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "keep_names_no_lowercase_miss",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "keepNames"
+    },
+    "outcome": {
+      "error": {
+        "kind": "MissingValue",
+        "message": "missing value for v",
+        "payload": "v"
+      },
+      "ok": false
+    },
+    "target": "U8S"
+  },
+  {
+    "id": "ws_0009_lead_u32",
+    "input": [
+      [
+        "V",
+        "\t1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_0009_trail_u32",
+    "input": [
+      [
+        "V",
+        "1\t"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_0009_only_str",
+    "input": [
+      [
+        "V",
+        "\t"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_000a_lead_u32",
+    "input": [
+      [
+        "V",
+        "\n1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000a_trail_u32",
+    "input": [
+      [
+        "V",
+        "1\n"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000a_only_str",
+    "input": [
+      [
+        "V",
+        "\n"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_000b_lead_u32",
+    "input": [
+      [
+        "V",
+        "\u000b1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000b_trail_u32",
+    "input": [
+      [
+        "V",
+        "1\u000b"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000b_only_str",
+    "input": [
+      [
+        "V",
+        "\u000b"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_000c_lead_u32",
+    "input": [
+      [
+        "V",
+        "\f1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000c_trail_u32",
+    "input": [
+      [
+        "V",
+        "1\f"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000c_only_str",
+    "input": [
+      [
+        "V",
+        "\f"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_000d_lead_u32",
+    "input": [
+      [
+        "V",
+        "\r1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000d_trail_u32",
+    "input": [
+      [
+        "V",
+        "1\r"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_000d_only_str",
+    "input": [
+      [
+        "V",
+        "\r"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_0020_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_0020_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_0020_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_0085_lead_u32",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_0085_trail_u32",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_0085_only_str",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_00a0_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_00a0_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_00a0_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_1680_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_1680_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_1680_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2000_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2000_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2000_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2001_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2001_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2001_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2002_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2002_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2002_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2003_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2003_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2003_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2004_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2004_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2004_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2005_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2005_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2005_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2006_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2006_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2006_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2007_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2007_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2007_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2008_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2008_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2008_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2009_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2009_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2009_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_200a_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200a_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200a_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2028_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2028_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2028_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2029_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2029_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2029_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_202f_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_202f_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_202f_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_205f_lead_u32",
+    "input": [
+      [
+        "V",
+        " 1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_205f_trail_u32",
+    "input": [
+      [
+        "V",
+        "1 "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_205f_only_str",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_3000_lead_u32",
+    "input": [
+      [
+        "V",
+        "　1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_3000_trail_u32",
+    "input": [
+      [
+        "V",
+        "1　"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          1
+        ]
+      }
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_3000_only_str",
+    "input": [
+      [
+        "V",
+        "　"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_feff_lead_u32",
+    "input": [
+      [
+        "V",
+        "﻿1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '﻿1' provided by V",
+        "payload": "invalid digit found in string while parsing value '﻿1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_feff_trail_u32",
+    "input": [
+      [
+        "V",
+        "1﻿"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '1﻿' provided by V",
+        "payload": "invalid digit found in string while parsing value '1﻿' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_feff_only_str",
+    "input": [
+      [
+        "V",
+        "﻿"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "﻿"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_180e_lead_u32",
+    "input": [
+      [
+        "V",
+        "᠎1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '᠎1' provided by V",
+        "payload": "invalid digit found in string while parsing value '᠎1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_180e_trail_u32",
+    "input": [
+      [
+        "V",
+        "1᠎"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '1᠎' provided by V",
+        "payload": "invalid digit found in string while parsing value '1᠎' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_180e_only_str",
+    "input": [
+      [
+        "V",
+        "᠎"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "᠎"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_200b_lead_u32",
+    "input": [
+      [
+        "V",
+        "​1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '​1' provided by V",
+        "payload": "invalid digit found in string while parsing value '​1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200b_trail_u32",
+    "input": [
+      [
+        "V",
+        "1​"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '1​' provided by V",
+        "payload": "invalid digit found in string while parsing value '1​' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200b_only_str",
+    "input": [
+      [
+        "V",
+        "​"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "​"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_200c_lead_u32",
+    "input": [
+      [
+        "V",
+        "‌1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '‌1' provided by V",
+        "payload": "invalid digit found in string while parsing value '‌1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200c_trail_u32",
+    "input": [
+      [
+        "V",
+        "1‌"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '1‌' provided by V",
+        "payload": "invalid digit found in string while parsing value '1‌' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200c_only_str",
+    "input": [
+      [
+        "V",
+        "‌"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "‌"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_200d_lead_u32",
+    "input": [
+      [
+        "V",
+        "‍1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '‍1' provided by V",
+        "payload": "invalid digit found in string while parsing value '‍1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200d_trail_u32",
+    "input": [
+      [
+        "V",
+        "1‍"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '1‍' provided by V",
+        "payload": "invalid digit found in string while parsing value '1‍' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_200d_only_str",
+    "input": [
+      [
+        "V",
+        "‍"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "‍"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "ws_2060_lead_u32",
+    "input": [
+      [
+        "V",
+        "⁠1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '⁠1' provided by V",
+        "payload": "invalid digit found in string while parsing value '⁠1' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2060_trail_u32",
+    "input": [
+      [
+        "V",
+        "1⁠"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid digit found in string while parsing value '1⁠' provided by V",
+        "payload": "invalid digit found in string while parsing value '1⁠' provided by V"
+      },
+      "ok": false
+    },
+    "target": "VecU32S"
+  },
+  {
+    "id": "ws_2060_only_str",
+    "input": [
+      [
+        "V",
+        "⁠"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "⁠"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "chardbg_0000",
+    "input": [
+      [
+        "V",
+        "a\u0000"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\0\", expected a character",
+        "payload": "invalid value: string \"a\\0\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0007",
+    "input": [
+      [
+        "V",
+        "a\u0007"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{7}\", expected a character",
+        "payload": "invalid value: string \"a\\u{7}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0009",
+    "input": [
+      [
+        "V",
+        "a\t"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\t\", expected a character",
+        "payload": "invalid value: string \"a\\t\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_000a",
+    "input": [
+      [
+        "V",
+        "a\n"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\n\", expected a character",
+        "payload": "invalid value: string \"a\\n\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_000d",
+    "input": [
+      [
+        "V",
+        "a\r"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\r\", expected a character",
+        "payload": "invalid value: string \"a\\r\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_001b",
+    "input": [
+      [
+        "V",
+        "a\u001b"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{1b}\", expected a character",
+        "payload": "invalid value: string \"a\\u{1b}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0022",
+    "input": [
+      [
+        "V",
+        "a\""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\\"\", expected a character",
+        "payload": "invalid value: string \"a\\\"\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0027",
+    "input": [
+      [
+        "V",
+        "a'"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a'\", expected a character",
+        "payload": "invalid value: string \"a'\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_005c",
+    "input": [
+      [
+        "V",
+        "a\\"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\\\\", expected a character",
+        "payload": "invalid value: string \"a\\\\\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_007f",
+    "input": [
+      [
+        "V",
+        "a"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{7f}\", expected a character",
+        "payload": "invalid value: string \"a\\u{7f}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0085",
+    "input": [
+      [
+        "V",
+        "a"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{85}\", expected a character",
+        "payload": "invalid value: string \"a\\u{85}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_00a0",
+    "input": [
+      [
+        "V",
+        "a "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{a0}\", expected a character",
+        "payload": "invalid value: string \"a\\u{a0}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_00ad",
+    "input": [
+      [
+        "V",
+        "a­"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{ad}\", expected a character",
+        "payload": "invalid value: string \"a\\u{ad}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0300",
+    "input": [
+      [
+        "V",
+        "à"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{300}\", expected a character",
+        "payload": "invalid value: string \"a\\u{300}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0301",
+    "input": [
+      [
+        "V",
+        "á"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{301}\", expected a character",
+        "payload": "invalid value: string \"a\\u{301}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_200b",
+    "input": [
+      [
+        "V",
+        "a​"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{200b}\", expected a character",
+        "payload": "invalid value: string \"a\\u{200b}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_200d",
+    "input": [
+      [
+        "V",
+        "a‍"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{200d}\", expected a character",
+        "payload": "invalid value: string \"a\\u{200d}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_2028",
+    "input": [
+      [
+        "V",
+        "a "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{2028}\", expected a character",
+        "payload": "invalid value: string \"a\\u{2028}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_2060",
+    "input": [
+      [
+        "V",
+        "a⁠"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{2060}\", expected a character",
+        "payload": "invalid value: string \"a\\u{2060}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_e000",
+    "input": [
+      [
+        "V",
+        "a"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{e000}\", expected a character",
+        "payload": "invalid value: string \"a\\u{e000}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_feff",
+    "input": [
+      [
+        "V",
+        "a﻿"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{feff}\", expected a character",
+        "payload": "invalid value: string \"a\\u{feff}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_115f",
+    "input": [
+      [
+        "V",
+        "aᅟ"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{115f}\", expected a character",
+        "payload": "invalid value: string \"a\\u{115f}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_1160",
+    "input": [
+      [
+        "V",
+        "aᅠ"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{1160}\", expected a character",
+        "payload": "invalid value: string \"a\\u{1160}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_3164",
+    "input": [
+      [
+        "V",
+        "aㅤ"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{3164}\", expected a character",
+        "payload": "invalid value: string \"a\\u{3164}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_ffa0",
+    "input": [
+      [
+        "V",
+        "aﾠ"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{ffa0}\", expected a character",
+        "payload": "invalid value: string \"a\\u{ffa0}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_1d15f",
+    "input": [
+      [
+        "V",
+        "a𝅘𝅥"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a𝅘𝅥\", expected a character",
+        "payload": "invalid value: string \"a𝅘𝅥\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_0e33",
+    "input": [
+      [
+        "V",
+        "aำ"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"aำ\", expected a character",
+        "payload": "invalid value: string \"aำ\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_09be",
+    "input": [
+      [
+        "V",
+        "aা"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"a\\u{9be}\", expected a character",
+        "payload": "invalid value: string \"a\\u{9be}\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_precomposed",
+    "input": [
+      [
+        "V",
+        "áb"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"áb\", expected a character",
+        "payload": "invalid value: string \"áb\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "chardbg_emoji_zwj",
+    "input": [
+      [
+        "V",
+        "👨‍💻"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid value: string \"👨\\u{200d}💻\", expected a character",
+        "payload": "invalid value: string \"👨\\u{200d}💻\", expected a character"
+      },
+      "ok": false
+    },
+    "target": "CharS"
+  },
+  {
+    "id": "nanf64_-nan",
+    "input": [
+      [
+        "V",
+        "-nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18444492273895866368"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_-nan",
+    "input": [
+      [
+        "V",
+        "-nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18444492273895866368"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_nan",
+    "input": [
+      [
+        "V",
+        "nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_nan",
+    "input": [
+      [
+        "V",
+        "nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_+nan",
+    "input": [
+      [
+        "V",
+        "+nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_+nan",
+    "input": [
+      [
+        "V",
+        "+nan"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_-NaN",
+    "input": [
+      [
+        "V",
+        "-NaN"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18444492273895866368"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_-NaN",
+    "input": [
+      [
+        "V",
+        "-NaN"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18444492273895866368"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_NAN",
+    "input": [
+      [
+        "V",
+        "NAN"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_NAN",
+    "input": [
+      [
+        "V",
+        "NAN"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9221120237041090560"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_-inf",
+    "input": [
+      [
+        "V",
+        "-inf"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18442240474082181120"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_-inf",
+    "input": [
+      [
+        "V",
+        "-inf"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18442240474082181120"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_-infinity",
+    "input": [
+      [
+        "V",
+        "-infinity"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18442240474082181120"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_-infinity",
+    "input": [
+      [
+        "V",
+        "-infinity"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "18442240474082181120"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "nanf64_+inf",
+    "input": [
+      [
+        "V",
+        "+inf"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F64S"
+  },
+  {
+    "id": "nanf32_+inf",
+    "input": [
+      [
+        "V",
+        "+inf"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "9218868437227405312"
+      }
+    },
+    "target": "F32S"
+  },
+  {
+    "id": "u128_supported",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "u128 is not supported",
+        "payload": "u128 is not supported"
+      },
+      "ok": false
+    },
+    "target": "U128S"
+  },
+  {
+    "id": "i128_supported",
+    "input": [
+      [
+        "V",
+        "-1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "i128 is not supported",
+        "payload": "i128 is not supported"
+      },
+      "ok": false
+    },
+    "target": "I128S"
+  },
+  {
+    "id": "u128_max",
+    "input": [
+      [
+        "V",
+        "340282366920938463463374607431768211455"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "u128 is not supported",
+        "payload": "u128 is not supported"
+      },
+      "ok": false
+    },
+    "target": "U128S"
+  },
+  {
+    "id": "i128_min",
+    "input": [
+      [
+        "V",
+        "-170141183460469231731687303715884105728"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "i128 is not supported",
+        "payload": "i128 is not supported"
+      },
+      "ok": false
+    },
+    "target": "I128S"
+  },
+  {
+    "id": "unicode_key_lowercase",
+    "input": [
+      [
+        "FOO_ÉÉ",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "foo_éé": "1"
+      }
+    },
+    "target": "MapString"
+  },
+  {
+    "id": "unicode_value_preserved",
+    "input": [
+      [
+        "V",
+        "   é́  "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": "   é́  "
+      }
+    },
+    "target": "StrS"
+  },
+  {
+    "id": "vec_str_nbsp_only",
+    "input": [
+      [
+        "V",
+        " "
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "vec_str_feff_only",
+    "input": [
+      [
+        "V",
+        "﻿"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          "﻿"
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "vec_str_nel_only",
+    "input": [
+      [
+        "V",
+        ""
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "ok": true,
+      "value": {
+        "v": [
+          ""
+        ]
+      }
+    },
+    "target": "VecStrS"
+  },
+  {
+    "id": "top_bool",
+    "input": [
+      [
+        "V",
+        "true"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected a boolean",
+        "payload": "invalid type: map, expected a boolean"
+      },
+      "ok": false
+    },
+    "target": "TopBool"
+  },
+  {
+    "id": "top_string",
+    "input": [
+      [
+        "V",
+        "x"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected a string",
+        "payload": "invalid type: map, expected a string"
+      },
+      "ok": false
+    },
+    "target": "TopString"
+  },
+  {
+    "id": "top_char",
+    "input": [
+      [
+        "V",
+        "a"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected a character",
+        "payload": "invalid type: map, expected a character"
+      },
+      "ok": false
+    },
+    "target": "TopChar"
+  },
+  {
+    "id": "top_u16",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected u16",
+        "payload": "invalid type: map, expected u16"
+      },
+      "ok": false
+    },
+    "target": "TopU16"
+  },
+  {
+    "id": "top_f64",
+    "input": [
+      [
+        "V",
+        "1.5"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected f64",
+        "payload": "invalid type: map, expected f64"
+      },
+      "ok": false
+    },
+    "target": "TopF64"
+  },
+  {
+    "id": "top_vec_u32",
+    "input": [
+      [
+        "V",
+        "1,2"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected a sequence",
+        "payload": "invalid type: map, expected a sequence"
+      },
+      "ok": false
+    },
+    "target": "TopVecU32"
+  },
+  {
+    "id": "top_opt_u16",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected option",
+        "payload": "invalid type: map, expected option"
+      },
+      "ok": false
+    },
+    "target": "TopOptU16"
+  },
+  {
+    "id": "top_size",
+    "input": [
+      [
+        "V",
+        "small"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected enum Size",
+        "payload": "invalid type: map, expected enum Size"
+      },
+      "ok": false
+    },
+    "target": "TopSize"
+  },
+  {
+    "id": "top_newtype",
+    "input": [
+      [
+        "V",
+        "1"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: map, expected tuple struct CustomNewType",
+        "payload": "invalid type: map, expected tuple struct CustomNewType"
+      },
+      "ok": false
+    },
+    "target": "TopNewtype"
+  },
+  {
+    "id": "map_value_as_string",
+    "input": [
+      [
+        "V",
+        "x"
+      ]
+    ],
+    "mode": {
+      "kind": "plain"
+    },
+    "outcome": {
+      "error": {
+        "kind": "Custom",
+        "message": "invalid type: string \"x\", expected a map",
+        "payload": "invalid type: string \"x\", expected a map"
+      },
+      "ok": false
+    },
+    "target": "MapValueS"
+  }
+]
