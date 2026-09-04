@@ -1,3 +1,10 @@
+# 0.4.2-js.0
+
+* ported from Rust to TypeScript. The published artifact is now an npm package with dual
+  ESM/CJS builds and no runtime dependencies. Behavior is unchanged; the only API difference is
+  that the target shape is passed as a runtime schema (`t.struct(...)`) rather than derived from a
+  Rust type. See [MIGRATION.md](MIGRATION.md).
+
 # 0.4.2
 
 * Correctly deserialize empty strings into empty sequence [#51](https://github.com/softprops/envy/pull/51)
